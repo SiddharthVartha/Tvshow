@@ -1,0 +1,93 @@
+<html>
+
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            font-family: 'Kaushan Script', cursive;
+            background-image: url("tvshow.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+
+        #image {
+            display: inline-block;
+            overflow: scroll;
+            background-color: rgba(0, 0, 0, 0.493);
+            width: 400px;
+            height: 400px;
+            border-radius: 30px;
+        }
+
+        center {
+            margin-top: 40px;
+        }
+
+        a {
+            display: flex;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <center>
+        <h1>Serarch tv show</h1>
+        <form id="fm">
+            <label for="inp">TV'SHOWS :</label>
+            <input placeholder="SEARCH" id="inp" autocomplete="off">
+            <button>Search</button>
+            <button type="reset" id="reset" >Reset</button>
+        </form>
+        <div id="image">
+        </div>
+    </center>
+    <script>
+        const f = document.querySelector("form");
+        console.log(f);
+        const notset=document.getElementById('reset');
+        f.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const b = document.getElementById('inp').value;
+            const res =axios.get(`http://api.tvmaze.com/search/shows?q=${b}`);
+            res.then((data) => {
+                for (let i of data.data) {
+                    try {
+                        const actual = i.show.image.medium;
+                        const img = document.getElementById("image");
+                        const add = document.createElement("img");
+                        add.src = actual;
+                        img.appendChild(add);
+                        const brake = document.createElement("br");
+                        const a = document.createElement("a");
+                        a.href = i.show.url;
+                        a.innerText = i.show.name;
+                        add.after(a);
+                        a.after(brake);
+                    }
+                    catch (e) {
+                        console.log("image not Found");
+                    }
+                }
+            });
+        });
+        notset.addEventListener('click',function(e){
+            e.preventDefault();
+            const b = document.getElementById('inp');
+            const image=document.querySelectorAll('img');
+            const anchor=document.querySelectorAll('a');
+            const brake=document.querySelectorAll('br');
+            const img = document.getElementById("image");
+            b.value="";
+            image.forEach(e => e.parentNode.removeChild(e));
+            anchor.forEach(e => e.parentNode.removeChild(e));
+            brake.forEach(e => e.parentNode.removeChild(e));
+        });
+    </script>
+</body>
+
+</html>
